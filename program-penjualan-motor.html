@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <title>Program Penjualan Motor</title>
+</head>
+<body>
+  <form action="#" method="GET" name="autoSumForm">
+    <h1 style="text-align: center">PROGRAM PENJUALAN MOTOR</h1>
+    <hr>
+    <table style="margin: 0 auto;">
+      <tr>
+        <td>Merk Motor</td>
+        <td>
+          <select name="motorcycle_brand" id="motorcycle-brand" onchange="calculate()">
+            <option value="15000000">Honda</option>
+            <option value="14000000">Yamaha</option>
+            <option value="13000000">Suzuki</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Aksesoris</td>
+        <td>
+          <input type="checkbox" name="accessory_velg" id="accessory-velg" value="450000" onclick="calculate()">Velg Racing
+          <br>
+          <input type="checkbox" name="accessory_helmet" id="accessory-helmet" value="250000" onclick="calculate()">Helm
+          <br>
+          <input type="checkbox" name="accessory_jacket" id="accessory-jacket" value="300000" onclick="calculate()">Jaket
+        </td>
+      </tr>
+      <tr>
+        <td>Cara Pembayaran</td>
+        <td>
+          <input type="radio" name="payment_method" id="payment-cash" value="cash" onchange="calculate()">Tunai
+          <br>
+          <input type="radio" name="payment_method" id="payment-credit" value="credit" onchange="calculate()">Kredit
+        </td>
+      </tr>
+      <tr>
+        <td>Harga</td>
+        <td>
+          <input type="text" name="price_subtotal" id="price-subtotal" readonly>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span id="interest-text">Bunga</span>/<span id="discount-text">Diskon</span>
+        </td>
+        <td>
+          <input type="text" name="additional" id="additional" readonly>
+        </td>
+      </tr>
+      <tr>
+        <td>Total</td>
+        <td>
+            <input type="text" name="price_total" id="price-total" readonly>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <script>
+    // ambil element
+    function getByName(el) { return document.getElementsByName(el)[0] }
+
+    // masukkan semua elemen input ke dalam variabel
+    var motorcycleBrand = getByName('motorcycle_brand');
+    var accessories = {
+      velg: getByName('accessory_velg'),
+      helmet: getByName('accessory_helmet'),
+      jacket: getByName('accessory_jacket'),
+    };
+    var cashPayment = document.getElementById('payment-cash');
+    var creditPayment = document.getElementById('payment-credit');
+
+    var subtotal = getByName('price_subtotal');
+    var additional = getByName('additional');
+    var total = getByName('price_total');
+
+    // fungsi kalkulasi
+    function calculate() {
+      var priceSubtotal = 0;
+
+      // tambahkan harga motor ke subtotal
+      priceSubtotal += parseInt(motorcycleBrand.value);
+
+      // tambahkan harga aksesoris-aksesoris yang dipilih ke subtotal
+      for (var name in accessories) {
+        if (accessories[name].checked) priceSubtotal += parseInt(accessories[name].value);
+      }
+
+      // set nilai input subtotal
+      subtotal.value = priceSubtotal;
+
+      if (cashPayment.checked) {
+        // tebalkan kata "diskon"
+        document.getElementById('discount-text').style.fontWeight = 'bold';
+        document.getElementById('interest-text').style.fontWeight = 'normal';
+
+        // tampilkan pengurangan
+        additional.value = '15% (-' + (priceSubtotal * 0.10) + ')';
+
+        // subtotal dikurangi diskon
+        total.value = priceSubtotal - (priceSubtotal * 0.10);
+      } else if (creditPayment.checked) {
+        // tebalkan kata "bunga"
+        document.getElementById('discount-text').style.fontWeight = 'normal';
+        document.getElementById('interest-text').style.fontWeight = 'bold';
+
+        // tampilkan penambahan
+        additional.value = '15% (+' + (priceSubtotal * 0.15) + ')';
+
+        // subtotal ditambah bunga
+        total.value = priceSubtotal + (priceSubtotal * 0.15);
+      } else {
+        // langsung set total karena payment belum di-check
+        total.value = priceSubtotal;
+      }
+    }
+
+    // eksekusi pertama kali
+    calculate();
+  </script>
+</body>
+</html>
+
